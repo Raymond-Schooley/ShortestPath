@@ -1,9 +1,12 @@
 /**
  * Representation of a graph vertex
  */
-public class Vertex {
+public class Vertex implements Comparable<Object> {
 	// label attached to this vertex
 	private String label;
+	public boolean seen = false;
+	public Vertex next = null;
+	public int priority = Integer.MAX_VALUE;
 
 	/**
 	 * Construct a new vertex
@@ -57,6 +60,10 @@ public class Vertex {
 		} else {
 			return label.equals(other.label);
 		}
+	}
+
+	public int compareTo(Object arg0) {
+		return Integer.compare(priority, ((Vertex)arg0).priority);
 	}
 
 }
