@@ -38,6 +38,9 @@ public class FindPaths {
 			
 			// YOUR CODE HERE: call shortestPath and print
 			// out the result
+			Path shortestPath = g.shortestPath(a, b);
+			System.out.println("Path is " + shortestPath.vertices);
+			System.out.println("Weight is " + shortestPath.cost);
 		}
 	}
 
