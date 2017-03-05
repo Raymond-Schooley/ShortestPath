@@ -6,6 +6,10 @@
  * TCSS 342 - Project 3
  */
 
+
+//So I took a shot at this... it works with Main but paths calculated after the 1st don't work. Will debug that issue sunday -Walker
+
+
 import java.util.*;
 
 /**
@@ -16,21 +20,15 @@ public class MyGraph implements Graph {
 	// you will need some private fields to represent the graph
 	// you are also likely to want some private helper methods
 
-	// YOUR CODE HERE
+	private Map<Vertex, ArrayList<Edge>> adjacencyMap = new HashMap<Vertex, ArrayList<Edge>>();
 
-	/**
-	 * Creates a MyGraph object with the given collection of vertices and the
-	 * given collection of edges.
-	 * 
-	 * @param v
-	 *            a collection of the vertices in this graph
-	 * @param e
-	 *            a collection of the edges in this graph
-	 */
-	public MyGraph(Collection<Vertex> v, Collection<Edge> e) {
-
-		// YOUR CODE HERE
-
+	public MyGraph(Collection<Vertex> newVertices, Collection<Edge> newEdges) {
+		for(Vertex newVertex: newVertices) {
+			adjacencyMap.put(newVertex, new ArrayList<Edge>());
+		}
+		for (Edge newEdge: newEdges) {
+			adjacencyMap.get(newEdge.getSource()).add(newEdge);
+		}
 	}
 
 	/**
@@ -38,11 +36,9 @@ public class MyGraph implements Graph {
 	 * 
 	 * @return the vertices as a collection (which is anything iterable)
 	 */
-	@Override
+	//@Override
 	public Collection<Vertex> vertices() {
-
-		// YOUR CODE HERE
-
+		return adjacencyMap.keySet();
 	}
 
 	/**
@@ -50,11 +46,15 @@ public class MyGraph implements Graph {
 	 * 
 	 * @return the edges as a collection (which is anything iterable)
 	 */
-	@Override
+	//@Override
 	public Collection<Edge> edges() {
-
-		// YOUR CODE HERE
-
+		List<Edge> edges = new ArrayList<Edge>();
+		for(Map.Entry<Vertex, ArrayList<Edge>> entry: adjacencyMap.entrySet()) {
+			for (Edge e : entry.getValue()) {
+				edges.add(e);
+			}
+		}
+		return edges;
 	}
 
 	/**
@@ -68,11 +68,16 @@ public class MyGraph implements Graph {
 	 * @throws IllegalArgumentException
 	 *             if v does not exist.
 	 */
-	@Override
+	//@Override
 	public Collection<Vertex> adjacentVertices(Vertex v) {
-
-		// YOUR CODE HERE
-
+		List<Vertex> adjVertices = new ArrayList<Vertex>();
+		if (adjacencyMap.containsKey(v)) {
+			ArrayList<Edge> edges = adjacencyMap.get(v);
+			for (Edge e : edges) {
+				adjVertices.add(e.getDestination());
+			}
+		}
+		return adjVertices;
 	}
 
 	/**
@@ -88,11 +93,17 @@ public class MyGraph implements Graph {
 	 * @throws IllegalArgumentException
 	 *             if a or b do not exist.
 	 */
-	@Override
+	//@Override
 	public int edgeCost(Vertex a, Vertex b) {
-
-		// YOUR CODE HERE
-
+		int ret = -1;
+		if (adjacencyMap.containsKey(a)) {
+			for (Edge edge : adjacencyMap.get(a)) {
+				if (edge.getDestination().equals(b))
+					ret = edge.getWeight();
+					break;
+			}
+		}
+		return ret;
 	}
 
 	/**
@@ -111,10 +122,51 @@ public class MyGraph implements Graph {
 	 *             if a or b does not exist.
 	 */
 	public Path shortestPath(Vertex a, Vertex b) {
+		List<Vertex> shortestPath = new ArrayList<Vertex>();
+		Path ret;
+		
+		if (a.equals(b)) {
+			shortestPath.add(a);
+			ret = new Path(shortestPath, 0);
+		
+		} else {
+			
+			a.priority = 0;
+			PriorityQueue<Vertex> queue = new PriorityQueue<Vertex>();
+			queue.add(a);
+			
+			while (!queue.isEmpty()) {
+				Vertex currentV = queue.poll();
+				currentV.seen = true;
 
-		// YOUR CODE HERE (you might comment this out this method while doing
-		// Part 1)
-
+				for (Edge e: adjacencyMap.get(currentV)) {
+					Vertex nextV = null;
+					for (Vertex v : adjacencyMap.keySet()) {
+						if (v.equals(e.getDestination())) {
+							nextV = v;
+							break;
+						}
+					}
+					if (!nextV.seen && currentV.priority + e.getWeight() < nextV.priority) {
+						nextV.priority = currentV.priority + e.getWeight();
+						nextV.next = currentV;
+						queue.offer(nextV);
+						if (nextV.equals(b)) {
+							b.next = nextV.next;
+							b.priority = nextV.priority;
+						}
+					}
+				}
+			}
+			
+			for (Vertex v = b; v != null; v = v.next) {
+				shortestPath.add(v);
+			}
+			Collections.reverse(shortestPath);
+			ret = new Path(shortestPath, b.priority);
+		}
+		
+		return ret;
 	}
 
 }
