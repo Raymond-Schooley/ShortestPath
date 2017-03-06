@@ -4,9 +4,11 @@
 public class Vertex implements Comparable<Object> {
 	// label attached to this vertex
 	private String label;
-	public boolean seen = false;
-	public Vertex next = null;
-	public int priority = Integer.MAX_VALUE;
+	
+	//additional temp values for calculating shortest path
+	public boolean seen;
+	public Vertex next;
+	public int priority;
 
 	/**
 	 * Construct a new vertex
@@ -18,6 +20,13 @@ public class Vertex implements Comparable<Object> {
 		if (label == null)
 			throw new IllegalArgumentException("null");
 		this.label = label;
+		resetTempVars();
+	}
+	
+	public void resetTempVars() {
+		seen = false;
+		next = null;
+		priority = Integer.MAX_VALUE;
 	}
 
 	/**
