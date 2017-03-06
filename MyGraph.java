@@ -8,7 +8,7 @@
 
 
 //So I took a shot at this... it works with Main but paths calculated after the 1st don't work. Will debug that issue sunday -Walker
-
+//update - working with successive shortestPath calls now
 
 import java.util.*;
 
@@ -130,7 +130,6 @@ public class MyGraph implements Graph {
 			ret = new Path(shortestPath, 0);
 		
 		} else {
-			
 			a.priority = 0;
 			PriorityQueue<Vertex> queue = new PriorityQueue<Vertex>();
 			queue.add(a);
@@ -164,8 +163,12 @@ public class MyGraph implements Graph {
 			}
 			Collections.reverse(shortestPath);
 			ret = new Path(shortestPath, b.priority);
+			
+			// reset temp vertex values to defaults
+			for (Vertex v : adjacencyMap.keySet()) {
+				v.resetTempVars();
+			}
 		}
-		
 		return ret;
 	}
 
