@@ -7,9 +7,13 @@
  */
 
 
+// Let's keep this file just incase.
+
 public class Main {
 
     public static void main(String[] args) {
-	// write your code here
+        // Run the main in FindPaths
+        String[] runArgs = {"vertex.txt", "edge.txt"};
+        FindPaths.main(runArgs);
     }
 }
