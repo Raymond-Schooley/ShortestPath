@@ -1,15 +1,3 @@
-/*
- * Raymond Schooley
- * David Dean
- * Walker Hertel
- * 03-03-2017
- * TCSS 342 - Project 3
- */
-
-
-//So I took a shot at this... it works with Main but paths calculated after the 1st don't work. Will debug that issue sunday -Walker
-//update - working with successive shortestPath calls now
-
 import java.util.*;
 
 /**
@@ -139,6 +127,7 @@ public class MyGraph implements Graph {
 				currentV.seen = true;
 
 				for (Edge e: adjacencyMap.get(currentV)) {
+					
 					Vertex nextV = null;
 					for (Vertex v : adjacencyMap.keySet()) {
 						if (v.equals(e.getDestination())) {
@@ -150,14 +139,16 @@ public class MyGraph implements Graph {
 						nextV.priority = currentV.priority + e.getWeight();
 						nextV.next = currentV;
 						queue.offer(nextV);
+						nextV.connectorDesc = e.description;
 						if (nextV.equals(b)) {
+							b.connectorDesc = e.description;
 							b.next = nextV.next;
 							b.priority = nextV.priority;
 						}
 					}
 				}
 			}
-			
+
 			for (Vertex v = b; v != null; v = v.next) {
 				shortestPath.add(v);
 			}

@@ -4,6 +4,9 @@
 public class Edge {
 	private Vertex from, to;
 	private int w;
+	
+	//used only for movie location application
+	public String description = "";
 
 	/**
 	 * Construct a new edge

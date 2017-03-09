@@ -9,6 +9,9 @@ public class Vertex implements Comparable<Object> {
 	public boolean seen;
 	public Vertex next;
 	public int priority;
+	
+	//used only for movie location application
+	public String connectorDesc = "";
 
 	/**
 	 * Construct a new vertex
@@ -44,7 +47,11 @@ public class Vertex implements Comparable<Object> {
 	 * @return the label attached to this vertex
 	 */
 	public String toString() {
-		return label;
+		if (connectorDesc.isEmpty()) {
+			return label;
+		} else {
+			return "\n\t<<<connected by " + connectorDesc + ">>>\n" + label;
+		}
 	}
 
 	// auto-generated: hashes on label
