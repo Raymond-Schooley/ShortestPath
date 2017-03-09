@@ -17,7 +17,75 @@ public class MyGraph implements Graph {
 		for (Edge newEdge: newEdges) {
 			adjacencyMap.get(newEdge.getSource()).add(newEdge);
 		}
+
+		checkEdgeExceptions();
 	}
+
+	/** Checking edge for exceptions. */
+	private void checkEdgeExceptions() {
+		//System.out.println(adjacencyMap.keySet());
+		Set<Vertex> setOfVertex = adjacencyMap.keySet();
+		Object theList[] = setOfVertex.toArray();
+
+		// Obtain the set in order to check if there are repeats.
+		for (int i = 0 ; i < theList.length; i++) {
+			ArrayList<Edge> edgeArrays = adjacencyMap.get(theList[i]);
+
+			Vertex previousSrc    = new Vertex("Temp");
+			Vertex previousDest   = new Vertex("Temp");
+			int    previousWeight = 0;
+
+			for (int j = 0 ; j < edgeArrays.size() ; j++) {
+				Edge edge = edgeArrays.get(j);
+				// System.out.println(edge);
+
+				// Check for null
+				if (edge == null) {
+					throw new NullPointerException();
+				}
+
+				// Check Weight
+				int edgeWeight = edge.getWeight();
+				if (edgeWeight <= 0) {
+					try {
+						throw new Exception("Weight is negative or 0");
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+
+				// Check Self Loop
+				Vertex currentSrc   = edge.getSource();
+				Vertex currentDest = edge.getDestination();
+				if (currentSrc.equals(currentDest)) {
+					try {
+						throw new Exception("Edge goes to self");
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
+
+				// Check repeating destination goes to the same destination with a different weight.
+				if (previousSrc.equals(currentDest) && previousDest.equals(currentDest)) {
+					// Check if weight differs.
+
+					if (edgeWeight != previousWeight) {
+						try {
+							throw new Exception("Repeated direction with different weight");
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+					}
+				}
+
+				// Assignment previous values for checking.
+				previousSrc    = currentSrc;
+				previousDest   = currentDest;
+				previousWeight = edgeWeight;
+			}
+		}
+	}
+
 
 	/**
 	 * Return the collection of vertices of this graph
