@@ -18,12 +18,12 @@ public class MyGraph implements Graph {
 			adjacencyMap.get(newEdge.getSource()).add(newEdge);
 		}
 
+		// Check for exceptions.
 		checkEdgeExceptions();
 	}
 
 	/** Checking edge for exceptions. */
 	private void checkEdgeExceptions() {
-		//System.out.println(adjacencyMap.keySet());
 		Set<Vertex> setOfVertex = adjacencyMap.keySet();
 		Object theList[] = setOfVertex.toArray();
 
@@ -31,20 +31,21 @@ public class MyGraph implements Graph {
 		for (int i = 0 ; i < theList.length; i++) {
 			ArrayList<Edge> edgeArrays = adjacencyMap.get(theList[i]);
 
+			// Temp placeholder values.
 			Vertex previousSrc    = new Vertex("Temp");
 			Vertex previousDest   = new Vertex("Temp");
 			int    previousWeight = 0;
 
+			// Iterate through everything to check.
 			for (int j = 0 ; j < edgeArrays.size() ; j++) {
 				Edge edge = edgeArrays.get(j);
-				// System.out.println(edge);
 
-				// Check for null
+				// Check for null.
 				if (edge == null) {
 					throw new NullPointerException();
 				}
 
-				// Check Weight
+				// Check Weight if 0 or negative.
 				int edgeWeight = edge.getWeight();
 				if (edgeWeight <= 0) {
 					try {
@@ -54,12 +55,12 @@ public class MyGraph implements Graph {
 					}
 				}
 
-				// Check Self Loop
-				Vertex currentSrc   = edge.getSource();
+				// Check for self loop.
+				Vertex currentSrc  = edge.getSource();
 				Vertex currentDest = edge.getDestination();
 				if (currentSrc.equals(currentDest)) {
 					try {
-						throw new Exception("Edge goes to self");
+						throw new Exception("Edge loops to self");
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
@@ -68,7 +69,6 @@ public class MyGraph implements Graph {
 				// Check repeating destination goes to the same destination with a different weight.
 				if (previousSrc.equals(currentDest) && previousDest.equals(currentDest)) {
 					// Check if weight differs.
-
 					if (edgeWeight != previousWeight) {
 						try {
 							throw new Exception("Repeated direction with different weight");
@@ -78,7 +78,7 @@ public class MyGraph implements Graph {
 					}
 				}
 
-				// Assignment previous values for checking.
+				// Assign previous values for checking due to being in order.
 				previousSrc    = currentSrc;
 				previousDest   = currentDest;
 				previousWeight = edgeWeight;
@@ -180,6 +180,11 @@ public class MyGraph implements Graph {
 	public Path shortestPath(Vertex a, Vertex b) {
 		List<Vertex> shortestPath = new ArrayList<Vertex>();
 		Path ret;
+
+		// If there is no path, return null.
+		if (a.equals(null) || b.equals(null)) {
+			return null;
+		}
 		
 		if (a.equals(b)) {
 			shortestPath.add(a);
