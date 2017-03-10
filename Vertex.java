@@ -2,13 +2,12 @@
  * Representation of a graph vertex
  */
 public class Vertex implements Comparable<Object> {
-	// label attached to this vertex
 	private String label;
 	
-	//additional temp values for calculating shortest path
-	public boolean seen;
-	public Vertex next;
-	public int priority;
+	// values for calculating shortest path
+	public boolean known;
+	public Vertex prev;
+	public int weight;
 	
 	//used only for movie location application
 	public String connectorDesc = "";
@@ -27,9 +26,9 @@ public class Vertex implements Comparable<Object> {
 	}
 	
 	public void resetTempVars() {
-		seen = false;
-		next = null;
-		priority = Integer.MAX_VALUE;
+		known = false;
+		prev = null;
+		weight = Integer.MAX_VALUE;
 	}
 
 	/**
@@ -79,7 +78,7 @@ public class Vertex implements Comparable<Object> {
 	}
 
 	public int compareTo(Object arg0) {
-		return Integer.compare(priority, ((Vertex)arg0).priority);
+		return Integer.compare(weight, ((Vertex)arg0).weight);
 	}
 
 }
