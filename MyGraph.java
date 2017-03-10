@@ -19,7 +19,18 @@ public class MyGraph implements Graph {
 		checkEdgeExceptions();
 	}
 
-	/** Checking edge for exceptions. */
+	/**
+	 * Checking edge for exceptions.
+	 *
+	 * @throws NullPointerException
+	 * 		When edge does not exist.
+	 * @throws Exception
+	 * 		Weight is negative or 0.
+	 * @throws Exception
+	 * 		Edge loops to self.
+	 * @throws Exception
+	 * 		Repeated direction with different weight.
+	 * */
 	private void checkEdgeExceptions() {
 		Set<Vertex> setOfVertex = adjacencyMap.keySet();
 		Object theList[] = setOfVertex.toArray();
@@ -39,14 +50,14 @@ public class MyGraph implements Graph {
 
 				// Check for null.
 				if (edge == null) {
-					throw new NullPointerException();
+					throw new NullPointerException("Edge does not exist.");
 				}
 
 				// Check Weight if 0 or negative.
 				int edgeWeight = edge.getWeight();
 				if (edgeWeight <= 0) {
 					try {
-						throw new Exception("Weight is negative or 0");
+						throw new Exception("Weight is negative or 0.");
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
@@ -57,7 +68,7 @@ public class MyGraph implements Graph {
 				Vertex currentDest = edge.getDestination();
 				if (currentSrc.equals(currentDest)) {
 					try {
-						throw new Exception("Edge loops to self");
+						throw new Exception("Edge loops to self.");
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
@@ -68,7 +79,7 @@ public class MyGraph implements Graph {
 					// Check if weight differs.
 					if (edgeWeight != previousWeight) {
 						try {
-							throw new Exception("Repeated direction with different weight");
+							throw new Exception("Repeated direction with different weight.");
 						} catch (Exception e) {
 							e.printStackTrace();
 						}
@@ -120,6 +131,10 @@ public class MyGraph implements Graph {
 	 *             if v does not exist.
 	 */
 	public Collection<Vertex> adjacentVertices(Vertex v) {
+		if (v == null) {
+			throw new IllegalArgumentException("Vertex does not exist");
+		}
+
 		List<Vertex> adjVertices = new ArrayList<Vertex>();
 		if (adjacencyMap.containsKey(v)) {
 			ArrayList<Edge> edges = adjacencyMap.get(v);
@@ -144,6 +159,13 @@ public class MyGraph implements Graph {
 	 *             if a or b do not exist.
 	 */
 	public int edgeCost(Vertex a, Vertex b) {
+		if (a.equals(null)) {
+			throw new IllegalArgumentException("Vertex a does not exist");
+		}
+		if (b.equals(null)) {
+			throw new IllegalArgumentException("Vertex b does not exist");
+		}
+
 		int ret = -1;
 		if (adjacencyMap.containsKey(a)) {
 			for (Edge edge : adjacencyMap.get(a)) {
@@ -171,13 +193,15 @@ public class MyGraph implements Graph {
 	 *             if a or b does not exist.
 	 */
 	public Path shortestPath(Vertex a, Vertex b) {
+		if (a.equals(null)) {
+			throw new IllegalArgumentException("Vertex a does not exist");
+		}
+		if (b.equals(null)) {
+			throw new IllegalArgumentException("Vertex b does not exist");
+		}
+
 		List<Vertex> shortestPath = new ArrayList<Vertex>();
 		Path ret;
-
-		// If either vertex is null, return null.
-		if (a.equals(null) || b.equals(null)) {
-			return null;
-		}
 		
 		//if a and b are the same node return that node and weight of 0
 		if (a.equals(b)) {
