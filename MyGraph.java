@@ -5,7 +5,7 @@ import java.util.*;
  * in the graph.
  */
 public class MyGraph implements Graph {
-	private Map<Vertex, ArrayList<Edge>> adjacencyMap = new HashMap<Vertex, ArrayList<Edge>>();
+	private HashMap<Vertex, ArrayList<Edge>> adjacencyMap = new HashMap<Vertex, ArrayList<Edge>>();
 
 	public MyGraph(Collection<Vertex> newVertices, Collection<Edge> newEdges) {
 		for(Vertex newVertex: newVertices) {
