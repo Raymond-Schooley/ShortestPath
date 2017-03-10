@@ -174,27 +174,31 @@ public class MyGraph implements Graph {
 		List<Vertex> shortestPath = new ArrayList<Vertex>();
 		Path ret;
 
-		// If there is no path, return null.
+		// If either vertex is null, return null.
 		if (a.equals(null) || b.equals(null)) {
 			return null;
 		}
 		
+		//if a and b are the same node return that node and weight of 0
 		if (a.equals(b)) {
 			shortestPath.add(a);
 			ret = new Path(shortestPath, 0);
 		
 		} else {
+			//Find shortest path
 			a.weight = 0;
 			PriorityQueue<Vertex> queue = new PriorityQueue<Vertex>();
 			queue.add(a);
-			
+			//Using the Priority queue to find the next vertex with the least weight
 			while (!queue.isEmpty()) {
 				Vertex currentV = queue.poll();
 				currentV.known = true;
 
+                //Search all the edges of next vertex				
 				for (Edge e: adjacencyMap.get(currentV)) {
 					
 					Vertex nextV = null;
+					//search for a matching destination vertex
 					for (Vertex v : adjacencyMap.keySet()) {
 						if (v.equals(e.getDestination())) {
 							nextV = v;
@@ -214,19 +218,21 @@ public class MyGraph implements Graph {
 					}
 				}
 			}
+			ret = null;
+            if (b.prev != null) {
+            	for (Vertex v = b; v != null; v = v.prev) {
+            		shortestPath.add(v);
+            	}
+            	Collections.reverse(shortestPath);
+            	ret = new Path(shortestPath, b.weight);
 
-			for (Vertex v = b; v != null; v = v.prev) {
-				shortestPath.add(v);
-			}
-			Collections.reverse(shortestPath);
-			ret = new Path(shortestPath, b.weight);
-			
-			// reset temp vertex values to defaults
-			for (Vertex v : adjacencyMap.keySet()) {
-				v.resetTempVars();
-			}
-		}
-		return ret;
-	}
+            	// reset temp vertex values to defaults
+            	for (Vertex v : adjacencyMap.keySet()) {
+            		v.resetTempVars();
+            	}
+            }
+       }
+	return ret;
+    }
 
 }
