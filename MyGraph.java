@@ -5,9 +5,6 @@ import java.util.*;
  * in the graph.
  */
 public class MyGraph implements Graph {
-	// you will need some private fields to represent the graph
-	// you are also likely to want some private helper methods
-
 	private Map<Vertex, ArrayList<Edge>> adjacencyMap = new HashMap<Vertex, ArrayList<Edge>>();
 
 	public MyGraph(Collection<Vertex> newVertices, Collection<Edge> newEdges) {
@@ -92,7 +89,6 @@ public class MyGraph implements Graph {
 	 * 
 	 * @return the vertices as a collection (which is anything iterable)
 	 */
-	//@Override
 	public Collection<Vertex> vertices() {
 		return adjacencyMap.keySet();
 	}
@@ -102,7 +98,6 @@ public class MyGraph implements Graph {
 	 * 
 	 * @return the edges as a collection (which is anything iterable)
 	 */
-	//@Override
 	public Collection<Edge> edges() {
 		List<Edge> edges = new ArrayList<Edge>();
 		for(Map.Entry<Vertex, ArrayList<Edge>> entry: adjacencyMap.entrySet()) {
@@ -124,7 +119,6 @@ public class MyGraph implements Graph {
 	 * @throws IllegalArgumentException
 	 *             if v does not exist.
 	 */
-	//@Override
 	public Collection<Vertex> adjacentVertices(Vertex v) {
 		List<Vertex> adjVertices = new ArrayList<Vertex>();
 		if (adjacencyMap.containsKey(v)) {
@@ -149,7 +143,6 @@ public class MyGraph implements Graph {
 	 * @throws IllegalArgumentException
 	 *             if a or b do not exist.
 	 */
-	//@Override
 	public int edgeCost(Vertex a, Vertex b) {
 		int ret = -1;
 		if (adjacencyMap.containsKey(a)) {
@@ -191,13 +184,13 @@ public class MyGraph implements Graph {
 			ret = new Path(shortestPath, 0);
 		
 		} else {
-			a.priority = 0;
+			a.weight = 0;
 			PriorityQueue<Vertex> queue = new PriorityQueue<Vertex>();
 			queue.add(a);
 			
 			while (!queue.isEmpty()) {
 				Vertex currentV = queue.poll();
-				currentV.seen = true;
+				currentV.known = true;
 
 				for (Edge e: adjacencyMap.get(currentV)) {
 					
@@ -208,25 +201,25 @@ public class MyGraph implements Graph {
 							break;
 						}
 					}
-					if (!nextV.seen && currentV.priority + e.getWeight() < nextV.priority) {
-						nextV.priority = currentV.priority + e.getWeight();
-						nextV.next = currentV;
+					if (!nextV.known && currentV.weight + e.getWeight() < nextV.weight) {
+						nextV.weight = currentV.weight + e.getWeight();
+						nextV.prev = currentV;
 						queue.offer(nextV);
 						nextV.connectorDesc = e.description;
 						if (nextV.equals(b)) {
 							b.connectorDesc = e.description;
-							b.next = nextV.next;
-							b.priority = nextV.priority;
+							b.prev = nextV.prev;
+							b.weight = nextV.weight;
 						}
 					}
 				}
 			}
 
-			for (Vertex v = b; v != null; v = v.next) {
+			for (Vertex v = b; v != null; v = v.prev) {
 				shortestPath.add(v);
 			}
 			Collections.reverse(shortestPath);
-			ret = new Path(shortestPath, b.priority);
+			ret = new Path(shortestPath, b.weight);
 			
 			// reset temp vertex values to defaults
 			for (Vertex v : adjacencyMap.keySet()) {
