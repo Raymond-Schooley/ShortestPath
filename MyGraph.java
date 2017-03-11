@@ -1,6 +1,7 @@
 import java.util.*;
 
 /**
+ * @author Walker Hertel, Raymond Schooley, David Dean
  * A representation of a graph. Assumes that we do not have negative cost edges
  * in the graph.
  */

@@ -9,7 +9,11 @@ import java.util.Scanner;
 
 import org.junit.Before;
 import org.junit.Test;
-
+/**
+ * Testing class for the MyGraph class
+ * @author Raymond Schooley, David Dean, Walker Hertel
+ *
+ */
 
 
 public class TestGraph {

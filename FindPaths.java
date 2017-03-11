@@ -5,6 +5,7 @@ import java.io.*;
  * Driver program that reads in a graph and prompts user for shortests paths in 
  * the graph. (Intentionally without comments.  Read through the code to 
  * understand what it does.)
+ * @author David Dean, Raymond Schooley, Walker Hertel
  */
 
 public class FindPaths {
