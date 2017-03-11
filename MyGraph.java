@@ -8,6 +8,16 @@ public class MyGraph implements Graph {
 	private HashMap<Vertex, ArrayList<Edge>> adjacencyMap = new HashMap<Vertex, ArrayList<Edge>>();
 
 	public MyGraph(Collection<Vertex> newVertices, Collection<Edge> newEdges) {
+//		System.out.println(newVertices.contains(new Vertex("ATL")));
+		checkVertexExceptions(newVertices, newEdges);
+//		test(newVertices);
+		//Remove Duplicate Edges
+		Set<Edge> s = new HashSet<>();
+		s.addAll(newEdges);
+		newEdges.clear();
+		newEdges.addAll(s);
+		s.clear();
+		
 		for(Vertex newVertex: newVertices) {
 			adjacencyMap.put(newVertex, new ArrayList<Edge>());
 		}
@@ -17,6 +27,36 @@ public class MyGraph implements Graph {
 
 		// Check for exceptions.
 		checkEdgeExceptions();
+		
+	}
+	
+	public void test(Collection<Vertex> theVerts) {
+		Vertex v1 = new Vertex("A");
+		ArrayList<Vertex> temp = new ArrayList<>();
+		temp.add(v1);
+		Vertex v2 = new Vertex("A");
+		System.out.println(temp.contains(v2));
+	}
+	
+	/**
+	 * Check to make sure that there are not any edges refferring to an edge that is
+	 * not included in the graph.
+	 * @throws IllegalArgumentExpection When an edge refers so an  vertex not 
+	 * included in this graph.
+	 */
+	public void checkVertexExceptions(Collection<Vertex> theVerts, 
+			Collection<Edge> theEdges) {
+//		Vertex v1 = new Vertex("LAX");
+//		Edge e1 = new Edge(v1, new Vertex("IND"), 80);
+//		System.out.println(theVerts.contains(e1.getDestination()));
+		for (Edge e: theEdges) {
+			if (!theVerts.contains(e.getSource()))
+			    throw new IllegalArgumentException("Source vertex is invalid" 
+			    		+ e.getSource().toString());
+			if(!theVerts.contains(e.getDestination()))
+				throw new IllegalArgumentException("Destination vertix is invalid"
+						+ e.getDestination().toString());
+		}
 	}
 
 	/**
@@ -24,14 +64,15 @@ public class MyGraph implements Graph {
 	 *
 	 * @throws NullPointerException
 	 * 		When edge does not exist.
-	 * @throws Exception
+	 * @throws BadWeightException
 	 * 		Weight is negative or 0.
-	 * @throws Exception
+	 * @throws SelfLoopException
 	 * 		Edge loops to self.
-	 * @throws Exception
+	 * @throws DifferentWeightException
 	 * 		Repeated direction with different weight.
 	 * */
 	private void checkEdgeExceptions() {
+		//Create set of vertexes for reference
 		Set<Vertex> setOfVertex = adjacencyMap.keySet();
 		Object theList[] = setOfVertex.toArray();
 
@@ -56,33 +97,21 @@ public class MyGraph implements Graph {
 				// Check Weight if 0 or negative.
 				int edgeWeight = edge.getWeight();
 				if (edgeWeight <= 0) {
-					try {
-						throw new Exception("Weight is negative or 0.");
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
+					throw new BadWeightException("Weight is negative or 0.");	
 				}
 
 				// Check for self loop.
 				Vertex currentSrc  = edge.getSource();
 				Vertex currentDest = edge.getDestination();
 				if (currentSrc.equals(currentDest)) {
-					try {
-						throw new Exception("Edge loops to self.");
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
+					throw new SelfLoopException("Edge loops to self.");
 				}
 
-				// Check repeating destination goes to the same destination with a different weight.
-				if (previousSrc.equals(currentDest) && previousDest.equals(currentDest)) {
+				// Check if this edge exist already with a different weight.
+				if (previousSrc.equals(currentSrc) && previousDest.equals(currentDest)) {
 					// Check if weight differs.
 					if (edgeWeight != previousWeight) {
-						try {
-							throw new Exception("Repeated direction with different weight.");
-						} catch (Exception e) {
-							e.printStackTrace();
-						}
+							throw new DifferentWeightException("Repeated direction with different weight.");	
 					}
 				}
 
@@ -199,6 +228,9 @@ public class MyGraph implements Graph {
 		if (b.equals(null)) {
 			throw new IllegalArgumentException("Vertex b does not exist");
 		}
+		
+		if (!adjacencyMap.containsKey(a) || !adjacencyMap.containsKey(b))
+			return null;
 
 		List<Vertex> shortestPath = new ArrayList<Vertex>();
 		Path ret;
@@ -260,3 +292,4 @@ public class MyGraph implements Graph {
     }
 
 }
+

@@ -2,8 +2,9 @@ import java.util.*;
 import java.io.*;
 
 /**
- * Driver program that reads in a graph and prompts user for shortests paths in the graph.
- * (Intentionally without comments.  Read through the code to understand what it does.)
+ * Driver program that reads in a graph and prompts user for shortests paths in 
+ * the graph. (Intentionally without comments.  Read through the code to 
+ * understand what it does.)
  */
 
 public class FindPaths {
@@ -18,16 +19,9 @@ public class FindPaths {
 		@SuppressWarnings("resource")
 		Scanner console = new Scanner(System.in);
 		Collection<Vertex> v = g.vertices();
-		Collection<Edge> e = g.edges();
-        
-		if (e.size() < 50) {
-			System.out.println("Vertices are "+v);
-			System.out.println("Edges are "+e);
-		} else {
-			System.out.println("Vertices size: " + v.size());
-			System.out.println("Edges size: " + e.size());
-		}
-		
+                Collection<Edge> e = g.edges();
+		System.out.println("Vertices are "+v);
+		System.out.println("Edges are "+e);
 		while(true) {
 			System.out.print("Start vertex? ");
 			Vertex a = new Vertex(console.nextLine());
@@ -46,8 +40,13 @@ public class FindPaths {
 			// YOUR CODE HERE: call shortestPath and print
 			// out the result
 			Path shortestPath = g.shortestPath(a, b);
-			System.out.println("Path is " + shortestPath.vertices);
-			System.out.println("Weight is " + shortestPath.cost);
+			System.out.println("Shortest path from X to Y:");
+			if (shortestPath != null) {
+				System.out.println(shortestPath.vertices);
+				System.out.println(shortestPath.cost);
+			} else {
+				System.out.println("does not exist");
+			}
 		}
 	}
 
@@ -61,9 +60,9 @@ public class FindPaths {
 		}
 
 		Collection<Vertex> v = new ArrayList<Vertex>();
-		while(s.hasNext()) {
-			v.add(new Vertex(s.nextLine()));
-		}
+		while(s.hasNext())
+			v.add(new Vertex(s.next()));
+
 		try {
 			s = new Scanner(new File(f2));
 		} catch(FileNotFoundException e1) {
@@ -74,20 +73,11 @@ public class FindPaths {
 		Collection<Edge> e = new ArrayList<Edge>();
 		while(s.hasNext()) {
 			try {
-				Vertex a = new Vertex(s.nextLine());
-				Vertex b = new Vertex(s.nextLine());
-				String weightStr = s.nextLine();
-				String[] tabSplit = weightStr.split("\t", -1);
-				int w = Integer.parseInt(tabSplit[0]);
-				String vertexDesc = "";
-				if (tabSplit.length > 1) {
-					vertexDesc = tabSplit[1];
-				}
-				Edge newedge = new Edge(a,b,w);
-				newedge.description = vertexDesc;
-				e.add(newedge);
+				Vertex a = new Vertex(s.next());
+				Vertex b = new Vertex(s.next());
+				int w = s.nextInt();
+				e.add(new Edge(a,b,w));
 			} catch (NoSuchElementException e2) {
-				e2.printStackTrace();
 				System.err.println("EDGE FILE FORMAT INCORRECT");
 				System.exit(3);
 			}
